@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-from appFolder.models import User, Plant, UserPlant
+from appFolder.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from appFolder import app, db, api
 import json
@@ -17,17 +17,19 @@ resource_fields = {
 
 #signin or login
 
+
 class UseSignIn(Resource):
     def post(self):
         email = request.json['email']
-        password = request.json['password'] 
+        password = request.json['password']
         result = User.query.filter_by(email=email).first()
         if result:
             if result.password == password:
-                return {"message":"login", "currentUserId": result.user_id, "currentUserName": result.username, "currentUserEmail": result.email, "currentUserPhoneNumber": result.phoneNumber}
-        return {"message":"not login"} 
+                return {"message": "login"}
+        return {"message": "not login"}
 
 #signup or register
+
 
 class UserSignUp(Resource):
     @marshal_with(resource_fields)
@@ -40,21 +42,10 @@ class UserSignUp(Resource):
         new_user.userType = request.json['userType']
         new_user.photo = request.json['photo']
 
-
         db.session.add(new_user)
         db.session.commit()
         return new_user
 
 
-
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
-
-
-
-
-
-
-
-
-
