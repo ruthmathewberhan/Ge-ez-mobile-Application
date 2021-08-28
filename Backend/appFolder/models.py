@@ -11,11 +11,11 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
     userType = db.Column(db.String(50), nullable=False)
     photo = db.Column(db.String(500), nullable=False)
-    user_status = db.relationship(
-        'UserStatus', backref='user status', lazy=True)
-    user_exam = db.relationship('UserExam', backref='user exam', lazy=True)
-    question = db.relationship('Question', backref='question', lazy=True)
-    comment = db.relationship('Comment', backref='comment', lazy=True)
+    # user_status = db.relationship(
+    #     'UserStatus', backref='user status', lazy=True)
+    # user_exam = db.relationship('UserExam', backref='user exam', lazy=True)
+    # question = db.relationship('Question', backref='question', lazy=True)
+    # comment = db.relationship('Comment', backref='comment', lazy=True)
 
     # def __repr__(self):
     #     return f"(username = {username}, password = {password})"
@@ -61,29 +61,23 @@ class Course(db.Model):
     courseName = db.Column(db.String(100), nullable=False)
     level_id = db.Column(db.Integer, db.ForeignKey(
         'level.level_id'), nullable=False)
-    # db.ForeignKey('user.user_id'),
-    userStatus = db.relationship('UserStatus', backref='get plant', lazy=True)
-    lesson = db.relationship(
-        'Lesson', backref='lesson', lazy=True)
-    # def __repr__(self):
-    #     return f"(username = {username}, password = {password})"
+    # userStatus = db.relationship('UserStatus', backref='get plant', lazy=True)
+    # lesson = db.relationship(
+    #     'Lesson', backref='lesson', lazy=True)
 
 
 class Level(db.Model):
     __tablename__ = "level"
     level_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     level_name = db.Column(db.String(100), nullable=False)
-    # db.ForeignKey('user.user_id'),
     course = db.relationship('Course', backref='course', lazy=True)
     userExam = db.relationship('UserExam', backref='user exam', lazy=True)
-    userStatus = db.relationship(
-        'UserStatus', backref='user status', lazy=True)
-    question = db.relationship(
-        'Question', backref='question', lazy=True)
-    lesson = db.relationship(
-        'Lesson', backref='lesson', lazy=True)
-    # def __repr__(self):
-    #     return f"(username = {username}, password = {password})"
+    # userStatus = db.relationship(
+    #     'UserStatus', backref='user status', lazy=True)
+    # question = db.relationship(
+    #     'Question', backref='question', lazy=True)
+    # lesson = db.relationship(
+    #     'Lesson', backref='lesson', lazy=True)
 
 
 class Lesson(db.Model):
@@ -96,10 +90,11 @@ class Lesson(db.Model):
         'course.course_id'), nullable=False)
     content = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(100), nullable=False)
-    comment = db.relationship(
-        'Comment', backref='comment', lazy=True)
-    userStatus = db.relationship(
-        'UserStatus', backref='user status', lazy=True)
+    # comment = db.relationship(
+    #     'Comment', backref='comment', lazy=True)
+    # userStatus = db.relationship(
+    #     'UserStatus', backref='user status', lazy=True)
+
 
 class Comment(db.Model):
     __tablename__ = "Comment"
@@ -110,6 +105,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
 
+
 class Question(db.Model):
     __tablename__ = "question"
     question_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -119,7 +115,8 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
     status = db.Column(db.String(100), nullable=False)
-    choice = db.relationship('Choice', backref='choice', lazy=True)
+    # choice = db.relationship('Choice', backref='choice', lazy=True)
+
 
 class Choice(db.Model):
     __tablename__ = "choice"
@@ -132,4 +129,5 @@ class Choice(db.Model):
         'question.question_id'), nullable=False)
     Answer = db.Column(db.String(100), nullable=False)
 
-# db.create_all()
+
+db.create_all()
