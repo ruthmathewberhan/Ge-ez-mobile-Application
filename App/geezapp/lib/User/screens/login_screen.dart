@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:geezapp/User/screens/components/background.dart';
 import 'package:geezapp/User/screens/components/round_button.dart';
 import 'package:geezapp/User/screens/sign_up_screen.dart';
-
+import 'package:geezapp/course/screens/home_screen.dart';
 import 'components/rounded_input_container.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:geezapp/main.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
+  @override
+  _StateLoginScreen createState() => _StateLoginScreen();
+}
 
-  final formKey = GlobalKey<FormState>();
+final emailController = TextEditingController();
+final passwordController = TextEditingController();
+final formKey = GlobalKey<FormState>();
+final url = 'http://localhost:5000/api/v1';
+var loggedIn = false;
+var currentUser;
 
-  LoginScreen({Key? key}) : super(key: key);
-
+class _StateLoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -38,6 +48,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   TextFieldContainer(
                     child: TextFormField(
+                      controller: emailController,
                       obscureText: false,
                       decoration: InputDecoration(
                           icon: Icon(
@@ -59,6 +70,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   TextFieldContainer(
                     child: TextFormField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                           icon: Icon(
@@ -79,6 +91,22 @@ class LoginScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       final formValid = formKey.currentState?.validate();
+                      Posts post = Posts(
+                          email: emailController.text,
+                          password: passwordController.text);
+                      createPost(url, body: post.toMap()).then((value) {
+                        if (value['message'] == 'login') {
+                          print('logged in');
+                          loggedIn = true;
+                          currentUser = value;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                          );
+                        } else {
+                          print('not logged in');
+                        }
+                      });
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
@@ -99,7 +127,8 @@ class LoginScreen extends StatelessWidget {
                   //   text: "ግባ",
                   //   press: () {
                   //     //print("clicked");
-                  //     final formValid = formKey.currentState?.validate();
+
+//     final formValid = formKey.currentState?.validate();
                   //   },
                   // ),
                   SizedBox(height: size.height * 0.03),
@@ -134,5 +163,44 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future createPost(String url, {required Map body}) async {
+  return http
+      .post(Uri.parse(url + "/user/login"),
+          headers: {'Content-Type': 'application/json'}, body: jsonEncode(body))
+      .then((http.Response response) {
+    final int statusCode = response.statusCode;
+
+    if (statusCode < 200 || statusCode > 400 || json == null) {
+      throw new Exception("Error while fetching data");
+    }
+    // print("Message returned: " + json.decode(response.body)['message']);
+    // return Posts.fromJson(json.decode(response.body));
+    if (json.decode(response.body)['message'] == 'login') {
+      print("login");
+    }
+
+    return json.decode(response.body);
+  });
+}
+
+class Posts {
+  final String email;
+  final String password;
+
+  Posts({required this.email, required this.password});
+
+  factory Posts.fromJson(Map json) {
+    return Posts(email: json['email'] ?? "", password: json['password'] ?? "");
+  }
+
+  Map<String, String> toMap() {
+    var map = new Map<String, String>();
+    map["email"] = email;
+    map["password"] = password;
+
+    return map;
   }
 }
