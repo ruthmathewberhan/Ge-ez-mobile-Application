@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geezapp/Admin/screens/admin2.dart';
 
 
 class DetailPagelesson extends StatelessWidget{
@@ -21,11 +22,7 @@ class DetailPagelesson extends StatelessWidget{
         leading: IconButton(
           icon:Icon(Icons.arrow_back) ,
           onPressed: (){
-            Navigator.push(context,
-              MaterialPageRoute(builder: (context) => DetailPagelesson (index),
-              ),
-            );
-
+            Navigator.pop(context);
           },
         ),
         title: Text(''),
