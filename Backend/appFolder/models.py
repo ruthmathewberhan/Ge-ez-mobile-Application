@@ -11,14 +11,11 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
     userType = db.Column(db.String(50), nullable=False)
     photo = db.Column(db.String(500), nullable=False)
-    # user_status = db.relationship(
-    #     'UserStatus', backref='user status', lazy=True)
-    # user_exam = db.relationship('UserExam', backref='user exam', lazy=True)
-    # question = db.relationship('Question', backref='question', lazy=True)
-    # comment = db.relationship('Comment', backref='comment', lazy=True)
-
-    # def __repr__(self):
-    #     return f"(username = {username}, password = {password})"
+    user_status = db.relationship(
+         'UserStatus', backref='user status', lazy=True)
+    user_exam = db.relationship('UserExam', backref='user exam', lazy=True)
+    question = db.relationship('Question', backref='question', lazy=True)
+    comment = db.relationship('Comment', backref='comment', lazy=True)
 
 
 class UserStatus(db.Model):
@@ -30,40 +27,30 @@ class UserStatus(db.Model):
         'course.course_id'), nullable=False)
     lesson_id = db.Column(db.Integer, db.ForeignKey(
         'lesson.lesson_id'), nullable=False)
-    # db.ForeignKey('user.user_id'),
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
-    #getPlant = db.relationship('UserPlant', backref='get plant', lazy=True)
-
-    # def __repr__(self):
-    #     return f"(username = {username}, password = {password})"
 
 
 class UserExam(db.Model):
     __tablename__ = "user_exam"
     userExam_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # db.ForeignKey('plant.plant_id'),
     status = db.Column(db.String, nullable=False)
-    # db.ForeignKey('user.user_id'),
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
     level_id = db.Column(db.Integer, db.ForeignKey(
         'level.level_id'), nullable=False)
-    # db.ForeignKey('user.user_id'),
     mark = db.Column(db.String, nullable=False)
 
-    #ingredRecip = db.relationship('RecipeIngredientTable', backref='ingredRecipe', lazy=True)
-
-
+   
 class Course(db.Model):
     __tablename__ = "course"
     course_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     courseName = db.Column(db.String(100), nullable=False)
     level_id = db.Column(db.Integer, db.ForeignKey(
         'level.level_id'), nullable=False)
-    # userStatus = db.relationship('UserStatus', backref='get plant', lazy=True)
-    # lesson = db.relationship(
-    #     'Lesson', backref='lesson', lazy=True)
+    userStatus = db.relationship('UserStatus', backref='get plant', lazy=True)
+    lesson = db.relationship(
+    'Lesson', backref='lesson', lazy=True)
 
 
 class Level(db.Model):
@@ -72,12 +59,12 @@ class Level(db.Model):
     level_name = db.Column(db.String(100), nullable=False)
     course = db.relationship('Course', backref='course', lazy=True)
     userExam = db.relationship('UserExam', backref='user exam', lazy=True)
-    # userStatus = db.relationship(
-    #     'UserStatus', backref='user status', lazy=True)
-    # question = db.relationship(
-    #     'Question', backref='question', lazy=True)
-    # lesson = db.relationship(
-    #     'Lesson', backref='lesson', lazy=True)
+    userStatus = db.relationship(
+         'UserStatus', backref='user status', lazy=True)
+    question = db.relationship(
+         'Question', backref='question', lazy=True)
+    lesson = db.relationship(
+         'Lesson', backref='lesson', lazy=True)
 
 
 class Lesson(db.Model):
@@ -90,10 +77,11 @@ class Lesson(db.Model):
         'course.course_id'), nullable=False)
     content = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(100), nullable=False)
-    # comment = db.relationship(
-    #     'Comment', backref='comment', lazy=True)
-    # userStatus = db.relationship(
-    #     'UserStatus', backref='user status', lazy=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False) 
+    comment = db.relationship(
+         'Comment', backref='comment', lazy=True)
+    userStatus = db.relationship(
+         'UserStatus', backref='user status', lazy=True)
 
 
 class Comment(db.Model):
@@ -104,6 +92,7 @@ class Comment(db.Model):
         'lesson.lesson_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
+    status = db.Column(db.String, nullable=False)
 
 
 class Question(db.Model):
@@ -115,7 +104,7 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.user_id'), nullable=False)
     status = db.Column(db.String(100), nullable=False)
-    # choice = db.relationship('Choice', backref='choice', lazy=True)
+    choice = db.relationship('Choice', backref='choice', lazy=True)
 
 
 class Choice(db.Model):
