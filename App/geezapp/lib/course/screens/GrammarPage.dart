@@ -69,7 +69,7 @@ class _GrammarPageState extends State<GrammarPage> {
                               onTap: () {
                                 Navigator.pushNamed(
                                     context, HomeScreen.routeName);
-                              },
+                              }, 
                               child: Container(
                                 child: Align(
                                   child: Text(
