@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String routeName = '/homescreen';
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -8,23 +9,40 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: Column(         
+            child: Column(
       children: <Widget>[
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(top: 0, left: 30),
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                        'assets/images/left_top.png',
-                      ),
-                      fit: BoxFit.fill),
+              Column(children: [
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 60),
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back)),
+                    )
+                  ],
                 ),
-              ),
+                Row(
+                  children: [
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/left_top.png',
+                            ),
+                            fit: BoxFit.fill),
+                      ),
+                    )
+                  ],
+                )
+              ]),
               Container(
                 height: 150,
                 width: 200,
