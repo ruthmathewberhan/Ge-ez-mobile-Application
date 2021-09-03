@@ -1,22 +1,23 @@
-import 'package:geez_mekdi/main.dart';
+import 'package:geezapp/Admin/screens/AdminMain.dart';
 import 'package:flutter/material.dart';
-import 'package:geez_mekdi/screens/details.dart';
-import 'package:geez_mekdi/screens/details_page_lesson.dart';
-import 'package:geez_mekdi/screens/details_page_exam.dart';
+import 'package:geezapp/Admin/screens/details.dart';
+import 'package:geezapp/Admin/screens/details_page_lesson.dart';
+import 'package:geezapp/Admin/screens/details_page_exam.dart';
 
-class SimpleAppBarPage extends StatefulWidget {
+class Admin extends StatefulWidget {
   @override
   _SimpleAppBarPageState createState() => _SimpleAppBarPageState();
 }
 
-class _SimpleAppBarPageState extends State<SimpleAppBarPage> {
+class _SimpleAppBarPageState extends State<Admin> {
   @override
   Widget build(BuildContext context) => DefaultTabController(
     length: 3,
     child: Scaffold(
       appBar: AppBar(
 
-        title: Text(MyApp.title),
+        title: Text("Admin"),
+
         //centerTitle: true,
 
         //backgroundColor: Colors.purple,
