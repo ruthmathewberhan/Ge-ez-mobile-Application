@@ -149,7 +149,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   children: [
-                    Container(
+                    Container(  
                         height: 55,
                         margin: EdgeInsets.only(top: 10, left: 5),
                         decoration: BoxDecoration(
