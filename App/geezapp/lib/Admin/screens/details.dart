@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:js';
@@ -25,8 +23,7 @@ class DetailPage extends StatelessWidget{
           leading: IconButton(
             icon:Icon(Icons.arrow_back) ,
             onPressed: (){
-              moveToLastScreen();
-
+              Navigator.pop(context);
             },
           ),
           title: Text(''),
