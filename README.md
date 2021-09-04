@@ -9,15 +9,11 @@ and post/update the content created by the teacher or deny it. Students will vie
 at each level, take the test for that level and access next level if he/she passes the test.
 
 ## Features List
-•	Authentication and Authorization
-
-•	CRUD on lessons provided for each teaching level - teachers will create the content and the admin can update or delete the content and all users will read it.
-
-•	CRUD on questions for the tests – questions created on the tests could get updated or deleted by the admin and are read by all users.
-
-•	Giving/Denying access to the next level based on a user’s score on the current level’s test. 
-
-•	Students can make comments on the lessons and teachers or fellow students can reply to the comment. 
+*	Authentication and Authorization
+*	CRUD on lessons provided for each teaching level - teachers will create the content and the admin can update or delete the content and all users will read it.
+*	CRUD on questions for the tests – questions created on the tests could get updated or deleted by the admin and are read by all users.
+*	Giving/Denying access to the next level based on a user’s score on the current level’s test. 
+*	Students can make comments on the lessons and teachers or fellow students can reply to the comment. 
 
 ## Group Members
 1.	Elda Girma                ATR/8907/11    Section 1
