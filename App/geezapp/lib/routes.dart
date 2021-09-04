@@ -9,7 +9,7 @@ import 'package:geezapp/course/screens/Courses2.dart';
 import 'package:geezapp/course/screens/home_screen.dart';
 
 class AppRoute {
-  static const initialRoute = UserHomePage.routeName;
+  static const initialRoute = LoginScreen.routeName;
 
   static final routes = {
     WelcomeScreen.routeName: (BuildContext context) => WelcomeScreen(),

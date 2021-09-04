@@ -12,6 +12,7 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State<UserHomePage> {
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -145,11 +146,11 @@ class _UserHomePageState extends State<UserHomePage> {
                         fontWeight: FontWeight.bold))
               ]),
               Container(
-                height: 220,
+                height: size.height * 0.26,
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   children: [
-                    Container(  
+                    Container(
                         height: 55,
                         margin: EdgeInsets.only(top: 10, left: 5),
                         decoration: BoxDecoration(
