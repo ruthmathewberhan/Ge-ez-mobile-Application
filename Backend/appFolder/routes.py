@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-from appFolder.models import User, Lesson, Question, Choice
+from appFolder.models import User, Lesson, Question, Choice,Comment
 from werkzeug.security import generate_password_hash, check_password_hash
 from appFolder import app, db, api
 import json
@@ -59,6 +59,15 @@ question_fields = {
     'level_id': fields.Integer,
     'user_id': fields.Integer,
     'status': fields.String
+}
+
+comment_fields ={
+    'comment_id' : fields.Integer,
+    'comment': fields.String,
+    'lesson_id' : fields.Integer,
+    'user_id':fields.Integer,
+    'status' :fields.String,
+
 }
 
 #signin or login
@@ -243,6 +252,45 @@ class QuestionByIdResource(Resource):
         return jsonify(return_json)
 
 
+class CommentResource (Resource):
+    @marshal_with(comment_fields)
+    def get(self, id):
+        result1 = Comment.query.filter_by(lesson_id=id).all()
+        if result1:
+            return result1
+        return "lesson id not found"
+
+class TeacherComment (Resource):
+    @marshal_with(comment_fields)
+    def get(self, id):
+        result1 = Comment.query.filter_by(user_id=id).all()
+        if result1:
+            return result1
+        return "Teaher id not found"
+
+
+class  NewComment(Resource):
+    @marshal_with(comment_fields)
+    def post(self):
+        new_comment =Comment()
+        new_comment.comment = request.json['comment']
+        new_comment.lesson_id = request.json['lesson_id']
+        new_comment.user_id = request.json['user_id']
+        new_comment.status = request.json['status']
+
+        db.session.add(new_comment)
+        db.session.commit()
+        return new_comment
+
+class CommentByStatus(Resource):
+    @marshal_with(comment_fields)
+    def get(self, status_id):
+        result1 = Comment.query.filter_by(status=status_id).all()
+        if result1:
+            return result1
+        return "status not found"
+
+
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
 api.add_resource(UserProfile,  "/api/v1/user/profile/<int:id>")
@@ -250,3 +298,7 @@ api.add_resource(LessonResource, "/api/v1/lessons/<string:lesson_status>")
 api.add_resource(QuestionResource,"/api/v1/questions/<string:question_status>")
 api.add_resource(LessonByIdResource, "/api/v1/lessons/<int:id>")
 api.add_resource(QuestionByIdResource, "/api/v1/questions/<int:id>")
+api.add_resource(CommentResource, "/api/v1/comment/lesson/<int:id>")
+api.add_resource(TeacherComment, "/api/v1/comment/teacher/<int:id>")
+api.add_resource(NewComment, "/api/v1/comment")
+api.add_resource(CommentByStatus,  "/api/v1/comment/status/<string:status_id>")
