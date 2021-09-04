@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-from appFolder.models import User
+from appFolder.models import User, Lesson, Question, Choice
 from werkzeug.security import generate_password_hash, check_password_hash
 from appFolder import app, db, api
 import json
@@ -14,6 +14,24 @@ user_update_args.add_argument('password', type=str, help='password')
 user_update_args.add_argument('userType', type=str, help='user type')
 user_update_args.add_argument('photo', type=str, help='photo')
 
+lesson_update_args = reqparse.RequestParser()
+lesson_update_args.add_argument('lessonName', type=str, help='lesson name')
+lesson_update_args.add_argument('level_id', type=int, help="level id")
+lesson_update_args.add_argument('course_id', type=int, help="course id")
+lesson_update_args.add_argument('content', type=str, help="lesson content")
+lesson_update_args.add_argument('status', type=str, help="lesson status")
+lesson_update_args.add_argument('teacher_id', type=int, help="teacher id")
+
+question_update_args = reqparse.RequestParser()
+question_update_args.add_argument('question', type=str, help="question name")
+question_update_args.add_argument('level_id', type=int, help="level id")
+question_update_args.add_argument('user_id', type=int, help="user id")
+question_update_args.add_argument('status', type=str, help="user status")
+question_update_args.add_argument('choice_1', type=str, help="choice 1")
+question_update_args.add_argument('choice_2', type=str, help="choice 2")
+question_update_args.add_argument('choice_3', type=str, help="choice 3")
+question_update_args.add_argument('choice_4', type=str, help="choice 4")
+question_update_args.add_argument('Answer', type=str, help="answer")
 
 resource_fields = {
     'user_id': fields.Integer,
@@ -25,9 +43,25 @@ resource_fields = {
     'photo': fields.String,
 }
 
+lesson_fields = {
+    'lesson_id': fields.Integer,
+    'lessonName': fields.String,
+    'level_id': fields.Integer,
+    'course_id': fields.Integer,
+    'content': fields.String,
+    'status': fields.String,
+    'teacher_id': fields.Integer,
+}
+
+question_fields = {
+    'question_id': fields.Integer,
+    'question': fields.String,
+    'level_id': fields.Integer,
+    'user_id': fields.Integer,
+    'status': fields.String
+}
+
 #signin or login
-
-
 class UseSignIn(Resource):
     def post(self):
         email = request.json['email']
@@ -96,7 +130,123 @@ class UserProfile(Resource):
 
         return result
 
+class LessonResource(Resource):
+    @marshal_with(lesson_fields)
+    def get(self, lesson_status):
+        result = Lesson.query.filter_by(status=lesson_status).all()
+        return result
+
+
+class LessonByIdResource(Resource):
+    def delete(self, id):
+        result = Lesson.query.filter_by(lesson_id=id).first()
+
+        if result:
+            db.session.delete(result)
+            db.session.commit()
+            return 'deleted successfully'
+        return 'no such lesson'
+
+    @marshal_with(lesson_fields)
+    def patch(self, id):
+        args = lesson_update_args.parse_args()
+        lesson = Lesson.query.filter_by(lesson_id=id).first()
+
+        if not lesson:
+            abort(404, message="id doesn't exist, cannot update")
+
+        if args['lessonName']:
+            lesson.lessonName = args['lessonName']
+        if args['level_id']:
+            lesson.level_id = args['level_id']
+        if args['course_id']:
+            lesson.course_id = args['course_id']
+        if args['content']:
+            lesson.content = args['content']
+        if args['status']:
+            lesson.status = args['status']
+        if args['teacher_id']:
+            lesson.teacher_id = args['teacher_id']
+
+        db.session.commit()
+        return lesson
+
+
+class QuestionResource(Resource):
+    @marshal_with(question_fields)
+    def get(self, question_status):
+        result = Question.query.filter_by(status=question_status).all()
+        return result
+
+
+class QuestionByIdResource(Resource):
+    def delete(self, id):
+        question = Question.query.filter_by(question_id=id).first()
+        question_choice = Choice.query.filter_by(Question_id=id).first()
+
+        if question_choice:
+            db.session.delete(question_choice)
+            db.session.commit()
+
+        if question:
+            db.session.delete(question)
+            db.session.commit()
+
+        return 'deleted from choice and question table successfully'
+
+    def patch(self, id):
+        args = question_update_args.parse_args()
+        question_res = Question.query.filter_by(question_id=id).first()
+        question_choice = Choice.query.filter_by(Question_id=id).first()
+
+        if not question_res or not question_choice:
+            abort(404, message="id doesn't exist, cannot update")
+
+        # Update question table
+        if args['question']:
+            question_res.question = args['question']
+        if args['level_id']:
+            question_res.level_id = args['level_id']
+        if args['user_id']:
+            question_res.user_id = args['user_id']
+        if args['status']:
+            question_res.status = args['status']
+
+        # Update choice table
+        if args['choice_1']:
+            question_choice.choice_1 = args['choice_1']
+        if args['choice_2']:
+            question_choice.choice_2 = args['choice_2']
+        if args['choice_3']:
+            question_choice.choice_3 = args['choice_3']
+        if args['choice_4']:
+            question_choice.choice_4 = args['choice_4']
+        if args['Answer']:
+            question_choice.Answer = args['Answer']
+
+        db.session.commit()
+
+        return_json = {
+            'question_id': question_res.question_id,
+            'question': question_res.question,
+            'level_id': question_res.level_id,
+            'user_id': question_res.user_id,
+            'status': question_res.status,
+            'choice_id': question_choice.choice_id,
+            'choice_1': question_choice.choice_1,
+            'choice_2': question_choice.choice_2,
+            'choice_3': question_choice.choice_3,
+            'choice_4': question_choice.choice_4,
+            'Question_id': question_choice.Question_id,
+            'Answer': question_choice.Answer
+        }
+        return jsonify(return_json)
+
 
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
 api.add_resource(UserProfile,  "/api/v1/user/profile/<int:id>")
+api.add_resource(LessonResource, "/api/v1/lessons/<string:lesson_status>")
+api.add_resource(QuestionResource,"/api/v1/questions/<string:question_status>")
+api.add_resource(LessonByIdResource, "/api/v1/lessons/<int:id>")
+api.add_resource(QuestionByIdResource, "/api/v1/questions/<int:id>")
