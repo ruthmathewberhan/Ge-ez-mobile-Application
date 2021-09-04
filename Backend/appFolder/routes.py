@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-from appFolder.models import User, Lesson, Question, Choice,Comment
+from appFolder.models import User, Lesson, Question, Choice, Comment, Course, Level, UserStatus
 from werkzeug.security import generate_password_hash, check_password_hash
 from appFolder import app, db, api
 import json
@@ -32,6 +32,9 @@ question_update_args.add_argument('choice_2', type=str, help="choice 2")
 question_update_args.add_argument('choice_3', type=str, help="choice 3")
 question_update_args.add_argument('choice_4', type=str, help="choice 4")
 question_update_args.add_argument('Answer', type=str, help="answer")
+
+status_update_args = reqparse.RequestParser()
+status_update_args.add_argument('level_id',type=int,help='level id')
 
 resource_fields = {
     'user_id': fields.Integer,
@@ -68,6 +71,25 @@ comment_fields ={
     'user_id':fields.Integer,
     'status' :fields.String,
 
+}
+course_field = {
+    'course_id':fields.Integer,
+    'courseName':fields.String,
+    'level_id':fields.Integer
+}
+
+
+level_fields ={
+    'level_id' : fields.Integer,
+    'level_name' : fields.String
+}
+
+user_status_fields = {
+    'userStatus_id': fields.Integer,
+    'level_id': fields.Integer,
+    'course_id': fields.Integer,
+    'lesson_id': fields.Integer,
+    'user_id': fields.Integer
 }
 
 #signin or login
@@ -290,6 +312,53 @@ class CommentByStatus(Resource):
             return result1
         return "status not found"
 
+class CourseResource (Resource):
+    @marshal_with(course_field)
+    def get(self,id):
+        result = Course.query.filter_by(level_id=id).all()
+        if result:
+            return result
+        return "level id not found"
+
+class LessonResourceElda(Resource):
+    @marshal_with(lesson_fields)
+    def get(self,id):
+        result = Lesson.query.filter_by(course_id=id).all()
+        if result:
+            return result
+        return "course id not found"
+
+class ContentResource(Resource):
+    @marshal_with(lesson_fields)
+    def get(self,id):
+        result = Lesson.query.filter_by(lesson_id=id).first()
+        if result:
+            return result
+        return "content not found"
+
+class LevelResource(Resource):
+    @marshal_with(level_fields)
+    def get(self,id):
+        userResult = UserStatus.query.filter_by(user_id=id).first()
+        if userResult:
+            levelResult = userResult.level_id
+            result = Level.query.filter_by(level_id = levelResult).first()
+            if result:
+                return result
+        return "level not found"
+    @marshal_with(user_status_fields)
+    def patch(self,id):
+        args = status_update_args.parse_args()
+        userResult = UserStatus.query.filter_by(user_id=id).first()
+
+        if args['level_id'] and userResult: #the updated id
+            userResult.level_id = args['level_id']
+
+        db.session.commit()
+
+        return userResult
+
+
 
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
@@ -302,3 +371,7 @@ api.add_resource(CommentResource, "/api/v1/comment/lesson/<int:id>")
 api.add_resource(TeacherComment, "/api/v1/comment/teacher/<int:id>")
 api.add_resource(NewComment, "/api/v1/comment")
 api.add_resource(CommentByStatus,  "/api/v1/comment/status/<string:status_id>")
+api.add_resource(CourseResource, '/api/v1/courses/<int:id>')
+api.add_resource(LessonResourceElda, '/api/v1/courses/lessons/<int:id>')
+api.add_resource(ContentResource, '/api/v1/courses/lessons/content/<int:id>')
+api.add_resource(LevelResource, '/api/v1/user/level/<int:id>')
