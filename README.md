@@ -16,9 +16,9 @@ at each level, take the test for that level and access next level if he/she pass
 *	Students can make comments on the lessons and teachers or fellow students can reply to the comment. 
 
 ## Group Members
-1.	Elda Girma...........ATR/8907/11....Section 1
-2.	Mekides Getahun      ETR/3218/11    Section 1
-3.	Rebecca Samuel       ATR/6554/11    Section 2
-4.	Ruth Matewos         ETR/4188/11    Section 2
-5.	Simreteab Mekbib     ATR/5625/11    Section 2
+1.	Elda Girma,          ATR/8907/11,   Section 1
+2.	Mekides Getahun,      ETR/3218/11,    Section 1
+3.	Rebecca Samuel,       ATR/6554/11,    Section 2
+4.	Ruth Matewos,        ETR/4188/11,    Section 2
+5.	Simreteab Mekbib,     ATR/5625/11,    Section 2
 
