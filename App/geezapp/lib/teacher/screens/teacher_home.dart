@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MaterialApp(
+void main() => runApp(const MyApp());
+
+/// This is the main application widget.
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  static const String _title = 'መግቢያ';
+  static const primaryColor = const Color(0xFFD55555);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: _title,
+      theme: ThemeData(
+        primaryColor: primaryColor,
+      ),
       home: Scaffold(
-    // appBar: AppBar(
-    //     leading: Icon(Icons.home),
-    //     title: Text('Home'),
-    //     actions: [Icon(Icons.more_vert)]),
-    body: HomeLessons(),
-  )));
+        appBar: AppBar(
+          leading: Icon(Icons.home),
+          title: const Text(_title),
+          backgroundColor: primaryColor,
+        ),
+        body: HomeLessons(),
+      ),
+    );
+  }
 }
 
 class HomeLessons extends StatelessWidget {
@@ -29,8 +46,8 @@ class HomeLessons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Colors.green[50],
                 ),
-                child: Text('Lessons',
-                    style: TextStyle(color: Colors.red[300], fontSize: 17)),
+                child: Text('ንዑስ ርዕሶች',
+                    style: TextStyle(color: Colors.black, fontSize: 17)),
               ),
               // Expanded(
               //   child: Container(
@@ -197,8 +214,8 @@ class HomeLessons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Colors.green[50],
                 ),
-                child: Text('Tests',
-                    style: TextStyle(color: Colors.red[300], fontSize: 17)),
+                child: Text('ፈተናዎች',
+                    style: TextStyle(color: Colors.black, fontSize: 17)),
               ),
               // Expanded(
               //   child: Container(
