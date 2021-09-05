@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geezapp/User/screens/profile_edit.dart';
 import 'package:geezapp/course/screens/Courses2.dart';
 import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'package:geezapp/enums.dart';
@@ -123,24 +124,29 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {},
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 25,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text(
-                      "Edit Account",
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, ProfileEdit.routeName);
+                },
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: Colors.black,
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 25,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        "Edit Account",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

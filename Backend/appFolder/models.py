@@ -123,3 +123,6 @@ class Choice(db.Model):
 
 
 db.create_all()
+
+
+              

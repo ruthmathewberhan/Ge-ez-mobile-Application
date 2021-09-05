@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geezapp/User/screens/components/background.dart';
-import 'package:geezapp/User/screens/components/round_button.dart';
 import 'package:geezapp/User/screens/sign_up_screen.dart';
-import 'package:geezapp/course/screens/home_screen.dart';
+import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'components/rounded_input_container.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:geezapp/main.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
@@ -101,7 +99,8 @@ class _StateLoginScreen extends State<LoginScreen> {
                           currentUser = value;
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => UserHomePage()),
                           );
                         } else {
                           print('not logged in');

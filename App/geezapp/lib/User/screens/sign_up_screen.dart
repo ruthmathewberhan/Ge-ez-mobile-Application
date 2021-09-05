@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geezapp/User/screens/login_screen.dart';
-import 'package:geezapp/course/screens/home_screen.dart';
+import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'package:get/get.dart';
-import '../../main.dart';
 import 'components/background.dart';
 import 'components/round_button.dart';
 import 'components/rounded_input_container.dart';
@@ -184,7 +183,7 @@ class SignUpScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
+                                        builder: (context) => UserHomePage()),
                                   );
                                 } else {
                                   print('not signed up');
