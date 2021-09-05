@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({Key? key}) : super(key: key);
@@ -17,9 +18,19 @@ class _StateProfileEdit extends State<ProfileEdit> {
   final secondNameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String id = "";
+
+  Future getEmail() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      id = preferences.getString('user_id')!;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getEmail();
     futureAlbum = fetchAlbum();
   }
 
@@ -92,10 +103,11 @@ class _StateProfileEdit extends State<ProfileEdit> {
                         onPressed: () {
                           setState(() {
                             futureAlbum = updateAlbum(
-                                emailController.text,
                                 firstNameController.text,
                                 secondNameController.text,
-                                passwordController.text);
+                                emailController.text,
+                                passwordController.text,
+                                id);
                           });
                         },
                         child: Text('Update'),
@@ -125,8 +137,10 @@ class _StateProfileEdit extends State<ProfileEdit> {
 }
 
 Future<Album> fetchAlbum() async {
-  final response =
-      await http.get(Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/1'));
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String id = preferences.getString('user_id')!;
+  final response = await http
+      .get(Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/$id'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -139,10 +153,10 @@ Future<Album> fetchAlbum() async {
   }
 }
 
-Future<Album> updateAlbum(
-    String firstName, String secondName, String email, String password) async {
+Future<Album> updateAlbum(String firstName, String secondName, String email,
+    String password, String id) async {
   final response = await http.patch(
-    Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/1'),
+    Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/$id'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

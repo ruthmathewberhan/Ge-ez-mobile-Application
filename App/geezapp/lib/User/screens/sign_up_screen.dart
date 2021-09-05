@@ -180,10 +180,10 @@ class SignUpScreen extends StatelessWidget {
                               createPost(url, body: post.toMap()).then((value) {
                                 if (value != "") {
                                   print('signed up');
-                                  Navigator.push(
+                                  Navigator.pop(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => UserHomePage()),
+                                        builder: (context) => LoginScreen()),
                                   );
                                 } else {
                                   print('not signed up');
