@@ -8,8 +8,10 @@ import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'package:geezapp/course/screens/Courses2.dart';
 import 'package:geezapp/course/screens/home_screen.dart';
 
+import 'package:geezapp/User/screens/profile_edit.dart';
+
 class AppRoute {
-  static const initialRoute = UserHomePage.routeName;
+  static const initialRoute = LoginScreen.routeName;
 
   static final routes = {
     WelcomeScreen.routeName: (BuildContext context) => WelcomeScreen(),
@@ -19,6 +21,7 @@ class AppRoute {
     UserHomePage.routeName: (BuildContext context) => UserHomePage(),
     Courses2.routeName: (BuildContext context) => Courses2(),
     GrammarPage.routeName: (BuildContext context) => GrammarPage(),
-    HomeScreen.routeName: (BuildContext context) => HomeScreen()
+    HomeScreen.routeName: (BuildContext context) => HomeScreen(),
+    ProfileEdit.routeName: (BuildContext context) => ProfileEdit()
   };
 }

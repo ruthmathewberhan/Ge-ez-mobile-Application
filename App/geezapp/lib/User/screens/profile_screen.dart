@@ -1,15 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:geezapp/User/screens/login_screen.dart';
+import 'package:geezapp/User/screens/profile_edit.dart';
+import 'package:geezapp/User/screens/sign_up_screen.dart';
 import 'package:geezapp/course/screens/Courses2.dart';
 import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'package:geezapp/enums.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
-class ProfileScreen extends StatelessWidget {
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ProfileScreen extends StatefulWidget {
   static const String routeName = '/profile';
   // final MenuState selectedMenu;
 
   const ProfileScreen({
     Key? key,
   }) : super(key: key);
+  @override
+  _StateProfileScreen createState() {
+    return _StateProfileScreen();
+  }
+}
+
+class _StateProfileScreen extends State<ProfileScreen> {
+  late Future<Album> _futureAlbum;
+  String email = "";
+  String id = "";
+
+  Future getEmail() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      email = preferences.getString('email')!;
+      id = preferences.getString('user_id')!;
+    });
+  }
+
+  Future logOut(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.remove('email');
+    preferences.remove('user_id');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getEmail();
+    _futureAlbum = fetchAlbum();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +165,12 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileEdit()),
+                );
+              },
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -153,7 +201,15 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  _futureAlbum = deleteAlbum(id);
+                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                );
+              },
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -184,7 +240,9 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                logOut(context);
+              },
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -297,7 +355,10 @@ class CustomNavBar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, ProfileScreen.routeName);
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => new ProfileScreen()));
                   },
                   icon: Icon(
                     Icons.person_outline,
@@ -321,5 +382,71 @@ class CustomNavBar extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<Album> fetchAlbum() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String id = preferences.getString('user_id')!;
+
+  final response = await http.get(
+    Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/$id'),
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response, then parse the JSON.
+    return Album.fromJson(jsonDecode(response.body)[0]);
+  } else {
+    // If the server did not return a 200 OK response, then throw an exception.
+    throw Exception('Failed to load album');
+  }
+}
+
+Future<Album> deleteAlbum(String id) async {
+  final http.Response response = await http.delete(
+    Uri.parse('http://127.0.0.1:5000/api/v1/user/profile/$id'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON. After deleting,
+    // you'll get an empty JSON `{}` response.
+    // Don't return `null`, otherwise `snapshot.hasData`
+    // will always return false on `FutureBuilder`.
+    return Album.fromJson(jsonDecode(response.body)[0]);
+  } else {
+    // If the server did not return a "200 OK response",
+    // then throw an exception.
+    throw Exception('Failed to delete album.');
+  }
+}
+
+class Album {
+  final String email;
+  final String firstName;
+  final String secondName;
+  final String password;
+  final String userType;
+  final String photo;
+
+  Album(
+      {required this.email,
+      required this.firstName,
+      required this.secondName,
+      required this.password,
+      required this.userType,
+      required this.photo});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(
+        email: json['email'] ?? "",
+        password: json['password'] ?? "",
+        firstName: json['firstName'] ?? "",
+        secondName: json['secondName'] ?? "",
+        userType: json['userType'] ?? "",
+        photo: json['photo'] ?? "");
   }
 }

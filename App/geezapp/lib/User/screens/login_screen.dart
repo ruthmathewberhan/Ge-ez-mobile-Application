@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geezapp/User/screens/components/background.dart';
-import 'package:geezapp/User/screens/components/round_button.dart';
 import 'package:geezapp/User/screens/sign_up_screen.dart';
-import 'package:geezapp/course/screens/home_screen.dart';
+import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'components/rounded_input_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:geezapp/main.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
@@ -94,14 +94,22 @@ class _StateLoginScreen extends State<LoginScreen> {
                       Posts post = Posts(
                           email: emailController.text,
                           password: passwordController.text);
-                      createPost(url, body: post.toMap()).then((value) {
+                      createPost(url, body: post.toMap()).then((value) async {
                         if (value['message'] == 'login') {
                           print('logged in');
+                          SharedPreferences sharedPreferences =
+                              await SharedPreferences.getInstance();
+                          sharedPreferences.setString(
+                              'email', emailController.text);
+                          sharedPreferences.setString(
+                              "user_id", value['user_id'].toString());
+                          print(value['user_id']);
                           loggedIn = true;
                           currentUser = value;
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => UserHomePage()),
                           );
                         } else {
                           print('not logged in');
