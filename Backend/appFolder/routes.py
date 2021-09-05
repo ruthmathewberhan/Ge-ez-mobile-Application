@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-from appFolder.models import User, Lesson, Question, Choice, Comment, Course, Level, UserStatus
+from appFolder.models import User, Lesson, Question, Choice, Comment, Course, Level, UserStatus, UserExam
 from werkzeug.security import generate_password_hash, check_password_hash
 from appFolder import app, db, api
 import json
@@ -90,6 +90,38 @@ user_status_fields = {
     'course_id': fields.Integer,
     'lesson_id': fields.Integer,
     'user_id': fields.Integer
+}
+
+# data fields from lesson table for teacher
+
+data_fields = {
+    'lesson_id' : fields.Integer,
+    'lessonName' : fields.String,
+    'level_id' : fields.Integer,
+    'course_id' : fields.Integer,
+    'content' : fields.String,
+    'status': fields.String,
+    'teacher_id' : fields.Integer,
+}
+
+# data fields from question table for teacher
+
+question_fields =  {
+    'question_id' : fields.Integer,
+    'question' : fields.String,
+    'level_id' : fields.Integer,
+    'user_id' : fields.Integer,
+    'status': fields.String,
+}
+
+# data fields from user exam table 
+
+exam_fields =  {
+    'userExam_id' : fields.Integer,
+    'status' : fields.String,
+    'user_id' : fields.Integer,
+    'level_id' : fields.Integer,
+    'mark': fields.String,
 }
 
 #signin or login
@@ -359,6 +391,133 @@ class LevelResource(Resource):
         return userResult
 
 
+# class for teacher's get lesson endpoints
+class GetTeacherLesson(Resource):
+    @marshal_with(data_fields)
+    def get(self, id):
+        result = Lesson.query.filter_by(teacher_id=id).all()
+        if result:
+            return result
+        return "No lessons found"
+
+
+# class for teacher's create lesson endpoints
+class PostTeacherLesson(Resource):
+
+    @marshal_with(data_fields)
+    def post(self):
+        new_lesson = Lesson()
+        new_lesson.lessonName = request.json['lessonName']
+        new_lesson.level_id = request.json['level_id']
+        new_lesson.course_id = request.json['course_id']
+        new_lesson.content = request.json['content']
+        new_lesson.status = request.json['status']
+        new_lesson.teacher_id = request.json['teacher_id']
+
+        db.session.add(new_lesson)
+        db.session.commit()
+        return new_lesson
+
+
+# class for teacher's get test endpoints
+
+class GetTeacherTest(Resource):
+    @marshal_with(question_fields)
+    def get(self, id):
+        result = Question.query.filter_by(user_id=id).all()
+        if result:
+            return result
+        return "No questions found"
+
+# class for teacher's  create test endpoints
+class PostTeacherTest(Resource):
+
+    def post(self):
+        new_question = Question()
+        new_choice = Choice()
+        new_question.question = request.json['question']
+        new_question.level_id = request.json['level_id']
+        new_question.user_id = request.json['user_id']
+        new_question.status = request.json['status']
+
+        db.session.add(new_question)
+        db.session.commit()
+
+        result1 = Question.query.filter_by(question=request.json['question']).first()
+
+        new_choice.Question_id = result1.question_id
+        new_choice.choice_1 = request.json['choice_1']
+        new_choice.choice_2 = request.json['choice_2']
+        new_choice.choice_3 = request.json['choice_3']
+        new_choice.choice_4 = request.json['choice_4']
+        new_choice.Answer = request.json['Answer']
+        
+        db.session.add(new_choice)
+        db.session.commit()
+
+        question_json = {
+            'question_id' : result1.question_id,
+            'question' : request.json['question'],
+            'level_id' : request.json['level_id'],
+            'user_id' : request.json['user_id'],
+            'status' : request.json['status'],
+            'Question_id' : result1.question_id,
+            'choice_1' : request.json['choice_1'],
+            'choice_2' : request.json['choice_2'],
+            'choice_3' : request.json['choice_3'],
+            'choice_4' : request.json['choice_4'],
+            'Answer' : request.json['Answer']
+
+        }
+
+        return jsonify(question_json)
+
+# class for user's get test endpoints
+
+class GetTest(Resource):
+    def get(self, id):
+        result1 = Question.query.filter_by(user_id=id).first()
+        if result1:
+            q_id = result1.question_id
+            result2 = Choice.query.filter_by(Question_id=q_id).all()
+
+
+            question_json = {
+            'question_id' : result1.question_id,
+            'question' : request.json['question'],
+            'level_id' : request.json['level_id'],
+            'user_id' : request.json['user_id'],
+            'status' : request.json['status'],
+            'Question_id' : result1.question_id,
+            'choice_1' : request.json['choice_1'],
+            'choice_2' : request.json['choice_2'],
+            'choice_3' : request.json['choice_3'],
+            'choice_4' : request.json['choice_4'],
+            'Answer' : request.json['Answer']
+
+        }
+
+        return jsonify(question_json)
+
+
+# class for user's exam statu endpoints
+class Exam(Resource):
+
+    @marshal_with(exam_fields)
+    def post(self):
+        new_exam = UserExam()
+        new_exam.status = request.json['status']
+        new_exam.user_id = request.json['user_id']
+        new_exam.level_id = request.json['level_id']
+        new_exam.mark = request.json['mark']
+
+        db.session.add(new_exam)
+        db.session.commit()
+
+        return new_exam        
+
+
+
 
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
@@ -375,3 +534,9 @@ api.add_resource(CourseResource, '/api/v1/courses/<int:id>')
 api.add_resource(LessonResourceElda, '/api/v1/courses/lessons/<int:id>')
 api.add_resource(ContentResource, '/api/v1/courses/lessons/content/<int:id>')
 api.add_resource(LevelResource, '/api/v1/user/level/<int:id>')
+api.add_resource(GetTeacherLesson, "/api/v1/lesson/<int:id>")
+api.add_resource(PostTeacherLesson, "/api/v1/lesson")
+api.add_resource(GetTeacherTest, "/api/v1/question/<int:id>")
+api.add_resource(PostTeacherTest, "/api/v1/question")
+api.add_resource(GetTest, "/api/v1/question/choice/<int:id>")
+api.add_resource(Exam, "/api/v1/exam")
