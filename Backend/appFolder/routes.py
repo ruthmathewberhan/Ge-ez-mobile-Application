@@ -34,7 +34,7 @@ question_update_args.add_argument('choice_4', type=str, help="choice 4")
 question_update_args.add_argument('Answer', type=str, help="answer")
 
 status_update_args = reqparse.RequestParser()
-status_update_args.add_argument('level_id',type=int,help='level id')
+status_update_args.add_argument('level_id', type=int, help='level id')
 
 resource_fields = {
     'user_id': fields.Integer,
@@ -64,24 +64,24 @@ question_fields = {
     'status': fields.String
 }
 
-comment_fields ={
-    'comment_id' : fields.Integer,
+comment_fields = {
+    'comment_id': fields.Integer,
     'comment': fields.String,
-    'lesson_id' : fields.Integer,
-    'user_id':fields.Integer,
-    'status' :fields.String,
+    'lesson_id': fields.Integer,
+    'user_id': fields.Integer,
+    'status': fields.String,
 
 }
 course_field = {
-    'course_id':fields.Integer,
-    'courseName':fields.String,
-    'level_id':fields.Integer
+    'course_id': fields.Integer,
+    'courseName': fields.String,
+    'level_id': fields.Integer
 }
 
 
-level_fields ={
-    'level_id' : fields.Integer,
-    'level_name' : fields.String
+level_fields = {
+    'level_id': fields.Integer,
+    'level_name': fields.String
 }
 
 user_status_fields = {
@@ -95,36 +95,38 @@ user_status_fields = {
 # data fields from lesson table for teacher
 
 data_fields = {
-    'lesson_id' : fields.Integer,
-    'lessonName' : fields.String,
-    'level_id' : fields.Integer,
-    'course_id' : fields.Integer,
-    'content' : fields.String,
+    'lesson_id': fields.Integer,
+    'lessonName': fields.String,
+    'level_id': fields.Integer,
+    'course_id': fields.Integer,
+    'content': fields.String,
     'status': fields.String,
-    'teacher_id' : fields.Integer,
+    'teacher_id': fields.Integer,
 }
 
 # data fields from question table for teacher
 
-question_fields =  {
-    'question_id' : fields.Integer,
-    'question' : fields.String,
-    'level_id' : fields.Integer,
-    'user_id' : fields.Integer,
+question_fields = {
+    'question_id': fields.Integer,
+    'question': fields.String,
+    'level_id': fields.Integer,
+    'user_id': fields.Integer,
     'status': fields.String,
 }
 
-# data fields from user exam table 
+# data fields from user exam table
 
-exam_fields =  {
-    'userExam_id' : fields.Integer,
-    'status' : fields.String,
-    'user_id' : fields.Integer,
-    'level_id' : fields.Integer,
+exam_fields = {
+    'userExam_id': fields.Integer,
+    'status': fields.String,
+    'user_id': fields.Integer,
+    'level_id': fields.Integer,
     'mark': fields.String,
 }
 
 #signin or login
+
+
 class UseSignIn(Resource):
     def post(self):
         email = request.json['email']
@@ -193,11 +195,27 @@ class UserProfile(Resource):
 
         return result
 
+
 class LessonResource(Resource):
-    @marshal_with(lesson_fields)
     def get(self, lesson_status):
+        final_res = []
+
         result = Lesson.query.filter_by(status=lesson_status).all()
-        return result
+        for item in result:
+            result2 = User.query.filter_by(user_id=item.teacher_id).first()
+            print(result2.firstName)
+            print(item.teacher_id)
+            return_json = {'lesson_id': item.lesson_id,
+                           'lessonName': item.lessonName,
+                           'level_id': item.level_id,
+                           'course_id': item.course_id,
+                           'content': item.content,
+                           'status': item.status,
+                           'teacher_id': item.teacher_id,
+                           'teacher_name': result2.firstName}
+            final_res.append(return_json)
+
+        return final_res
 
 
 class LessonByIdResource(Resource):
@@ -314,6 +332,7 @@ class CommentResource (Resource):
             return result1
         return "lesson id not found"
 
+
 class TeacherComment (Resource):
     @marshal_with(comment_fields)
     def get(self, id):
@@ -323,10 +342,10 @@ class TeacherComment (Resource):
         return "Teaher id not found"
 
 
-class  NewComment(Resource):
+class NewComment(Resource):
     @marshal_with(comment_fields)
     def post(self):
-        new_comment =Comment()
+        new_comment = Comment()
         new_comment.comment = request.json['comment']
         new_comment.lesson_id = request.json['lesson_id']
         new_comment.user_id = request.json['user_id']
@@ -336,6 +355,7 @@ class  NewComment(Resource):
         db.session.commit()
         return new_comment
 
+
 class CommentByStatus(Resource):
     @marshal_with(comment_fields)
     def get(self, status_id):
@@ -344,46 +364,51 @@ class CommentByStatus(Resource):
             return result1
         return "status not found"
 
+
 class CourseResource (Resource):
     @marshal_with(course_field)
-    def get(self,id):
+    def get(self, id):
         result = Course.query.filter_by(level_id=id).all()
         if result:
             return result
         return "level id not found"
 
+
 class LessonResourceElda(Resource):
     @marshal_with(lesson_fields)
-    def get(self,id):
+    def get(self, id):
         result = Lesson.query.filter_by(course_id=id).all()
         if result:
             return result
         return "course id not found"
 
+
 class ContentResource(Resource):
     @marshal_with(lesson_fields)
-    def get(self,id):
+    def get(self, id):
         result = Lesson.query.filter_by(lesson_id=id).first()
         if result:
             return result
         return "content not found"
 
+
 class LevelResource(Resource):
     @marshal_with(level_fields)
-    def get(self,id):
+    def get(self, id):
         userResult = UserStatus.query.filter_by(user_id=id).first()
         if userResult:
             levelResult = userResult.level_id
-            result = Level.query.filter_by(level_id = levelResult).first()
+            result = Level.query.filter_by(level_id=levelResult).first()
             if result:
                 return result
         return "level not found"
+
     @marshal_with(user_status_fields)
-    def patch(self,id):
+    def patch(self, id):
         args = status_update_args.parse_args()
         userResult = UserStatus.query.filter_by(user_id=id).first()
 
-        if args['level_id'] and userResult: #the updated id
+        if args['level_id'] and userResult:  # the updated id
             userResult.level_id = args['level_id']
 
         db.session.commit()
@@ -430,6 +455,8 @@ class GetTeacherTest(Resource):
         return "No questions found"
 
 # class for teacher's  create test endpoints
+
+
 class PostTeacherTest(Resource):
 
     def post(self):
@@ -443,7 +470,8 @@ class PostTeacherTest(Resource):
         db.session.add(new_question)
         db.session.commit()
 
-        result1 = Question.query.filter_by(question=request.json['question']).first()
+        result1 = Question.query.filter_by(
+            question=request.json['question']).first()
 
         new_choice.Question_id = result1.question_id
         new_choice.choice_1 = request.json['choice_1']
@@ -451,28 +479,29 @@ class PostTeacherTest(Resource):
         new_choice.choice_3 = request.json['choice_3']
         new_choice.choice_4 = request.json['choice_4']
         new_choice.Answer = request.json['Answer']
-        
+
         db.session.add(new_choice)
         db.session.commit()
 
         question_json = {
-            'question_id' : result1.question_id,
-            'question' : request.json['question'],
-            'level_id' : request.json['level_id'],
-            'user_id' : request.json['user_id'],
-            'status' : request.json['status'],
-            'Question_id' : result1.question_id,
-            'choice_1' : request.json['choice_1'],
-            'choice_2' : request.json['choice_2'],
-            'choice_3' : request.json['choice_3'],
-            'choice_4' : request.json['choice_4'],
-            'Answer' : request.json['Answer']
+            'question_id': result1.question_id,
+            'question': request.json['question'],
+            'level_id': request.json['level_id'],
+            'user_id': request.json['user_id'],
+            'status': request.json['status'],
+            'Question_id': result1.question_id,
+            'choice_1': request.json['choice_1'],
+            'choice_2': request.json['choice_2'],
+            'choice_3': request.json['choice_3'],
+            'choice_4': request.json['choice_4'],
+            'Answer': request.json['Answer']
 
         }
 
         return jsonify(question_json)
 
 # class for user's get test endpoints
+
 
 class GetTest(Resource):
     def get(self, id):
@@ -481,21 +510,20 @@ class GetTest(Resource):
             q_id = result1.question_id
             result2 = Choice.query.filter_by(Question_id=q_id).all()
 
-
             question_json = {
-            'question_id' : result1.question_id,
-            'question' : request.json['question'],
-            'level_id' : request.json['level_id'],
-            'user_id' : request.json['user_id'],
-            'status' : request.json['status'],
-            'Question_id' : result1.question_id,
-            'choice_1' : request.json['choice_1'],
-            'choice_2' : request.json['choice_2'],
-            'choice_3' : request.json['choice_3'],
-            'choice_4' : request.json['choice_4'],
-            'Answer' : request.json['Answer']
+                'question_id': result1.question_id,
+                'question': request.json['question'],
+                'level_id': request.json['level_id'],
+                'user_id': request.json['user_id'],
+                'status': request.json['status'],
+                'Question_id': result1.question_id,
+                'choice_1': request.json['choice_1'],
+                'choice_2': request.json['choice_2'],
+                'choice_3': request.json['choice_3'],
+                'choice_4': request.json['choice_4'],
+                'Answer': request.json['Answer']
 
-        }
+            }
 
         return jsonify(question_json)
 
@@ -514,16 +542,15 @@ class Exam(Resource):
         db.session.add(new_exam)
         db.session.commit()
 
-        return new_exam        
-
-
+        return new_exam
 
 
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
 api.add_resource(UserProfile,  "/api/v1/user/profile/<int:id>")
 api.add_resource(LessonResource, "/api/v1/lessons/<string:lesson_status>")
-api.add_resource(QuestionResource,"/api/v1/questions/<string:question_status>")
+api.add_resource(QuestionResource,
+                 "/api/v1/questions/<string:question_status>")
 api.add_resource(LessonByIdResource, "/api/v1/lessons/<int:id>")
 api.add_resource(QuestionByIdResource, "/api/v1/questions/<int:id>")
 api.add_resource(CommentResource, "/api/v1/comment/lesson/<int:id>")

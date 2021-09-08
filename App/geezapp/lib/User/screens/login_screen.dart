@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 final emailController = TextEditingController();
 final passwordController = TextEditingController();
-final formKey = GlobalKey<FormState>();
+GlobalKey<FormState> loginformKey = GlobalKey<FormState>();
 final url = 'http://localhost:5000/api/v1';
 var loggedIn = false;
 var currentUser;
@@ -31,7 +31,7 @@ class _StateLoginScreen extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: formKey,
+              key: loginformKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -90,7 +90,7 @@ class _StateLoginScreen extends State<LoginScreen> {
                   Padding(padding: EdgeInsets.only(bottom: 40)),
                   GestureDetector(
                     onTap: () {
-                      final formValid = formKey.currentState?.validate();
+                      final formValid = loginformKey.currentState?.validate();
                       Posts post = Posts(
                           email: emailController.text,
                           password: passwordController.text);
@@ -125,7 +125,7 @@ class _StateLoginScreen extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Center(
                         child: Text(
-                          "ተመዝገብ",
+                          "ግባ",
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                       ),

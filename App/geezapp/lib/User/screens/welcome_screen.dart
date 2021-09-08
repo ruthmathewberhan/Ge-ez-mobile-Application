@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geezapp/Lesson/screens/admin_login.dart';
 import 'package:geezapp/User/screens/login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class WelcomeScreen extends StatelessWidget {
         color: Color(0xFFB77415A),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 140, bottom: 20),
@@ -25,6 +26,7 @@ class WelcomeScreen extends StatelessWidget {
                   child: Image.asset("assets/images/home.png"),
                 ),
               ),
+              SizedBox(height: 20),
               Container(
                 child: Column(
                   children: [
@@ -44,7 +46,6 @@ class WelcomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              
               Container(
                 child: GestureDetector(
                   onTap: () {
@@ -69,6 +70,20 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  print("tapped");
+                  Navigator.pushNamed(context, AdminLoginScreen.routeName);
+                },
+                child: Text(
+                  "Admin",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline),
                 ),
               ),
             ],

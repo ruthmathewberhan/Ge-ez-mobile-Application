@@ -1,8 +1,10 @@
-import 'package:geezapp/Admin/screens/admin2.dart';
+import 'package:geezapp/Lesson/screens/admin2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MainPage extends StatefulWidget {
+  static const String routeName = "/adminmain";
+  
   final String title;
 
   const MainPage({
