@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geezapp/Admin/screens/admin2.dart';
+import 'package:geezapp/Lesson/screens/admin2.dart';
 
 
 class DetailPagelesson extends StatelessWidget{

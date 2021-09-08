@@ -13,7 +13,7 @@ String radioButtonItem = 'teacher';
 class SignUpScreen extends StatelessWidget {
   static const String routeName = '/signup';
 
-  final formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> signupformKey = GlobalKey<FormState>();
 
   SignUpScreen({Key? key}) : super(key: key);
 
@@ -73,7 +73,7 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                     Form(
-                      key: formKey,
+                      key: signupformKey,
                       child: Column(
                         children: [
                           TextFieldContainer(
@@ -168,7 +168,7 @@ class SignUpScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               final formValid =
-                                  formKey.currentState?.validate();
+                                  signupformKey.currentState?.validate();
                               Posts post = Posts(
                                 email: emailController.text,
                                 password: passwordController.text,
@@ -227,7 +227,7 @@ class SignUpScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             print("tapped");
-                            Navigator.pushNamed(context, LoginScreen.routeName);
+                            Navigator.pop(context);
                           },
                           child: Text(
                             "ይግቡ",

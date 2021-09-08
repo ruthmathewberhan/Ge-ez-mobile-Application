@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:js';
-
 
 
 class DetailPage extends StatelessWidget{
-  final int index;
+  static const String routeName = '/details';
 
-  DetailPage(this.index);
+  DetailPage();
 
 
   @override
@@ -58,7 +56,7 @@ class DetailPage extends StatelessWidget{
 
                       children: [
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 100.0),
+                          //margin: EdgeInsets.symmetric(horizontal: 100.0),
                           child: RaisedButton(
                             onPressed: () {},
                             color: Colors.green,
@@ -68,7 +66,7 @@ class DetailPage extends StatelessWidget{
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    'Approve',
+                                    'ተቀበል',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
@@ -80,7 +78,7 @@ class DetailPage extends StatelessWidget{
                               ),
                             ),
                         ),
-
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.3,),
                         RaisedButton(
                           onPressed: () {},
                           color: Colors.red,
@@ -90,7 +88,7 @@ class DetailPage extends StatelessWidget{
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                'Deny',
+                                'አትቀበል',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,

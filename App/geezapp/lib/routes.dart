@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geezapp/Lesson/screens/AdminMain.dart';
+import 'package:geezapp/Lesson/screens/details.dart';
 import 'package:geezapp/User/screens/profile_screen.dart';
 import 'package:geezapp/User/screens/sign_up_screen.dart';
 import 'package:geezapp/User/screens/welcome_screen.dart';
@@ -7,11 +9,11 @@ import 'package:geezapp/course/screens/GrammarPage.dart';
 import 'package:geezapp/course/screens/UserHomePage.dart';
 import 'package:geezapp/course/screens/Courses2.dart';
 import 'package:geezapp/course/screens/home_screen.dart';
-
 import 'package:geezapp/User/screens/profile_edit.dart';
+import 'package:geezapp/Lesson/screens/admin_login.dart';
 
 class AppRoute {
-  static const initialRoute = LoginScreen.routeName;
+  static const initialRoute = MainPage.routeName;
 
   static final routes = {
     WelcomeScreen.routeName: (BuildContext context) => WelcomeScreen(),
@@ -22,6 +24,9 @@ class AppRoute {
     Courses2.routeName: (BuildContext context) => Courses2(),
     GrammarPage.routeName: (BuildContext context) => GrammarPage(),
     HomeScreen.routeName: (BuildContext context) => HomeScreen(),
-    ProfileEdit.routeName: (BuildContext context) => ProfileEdit()
+    ProfileEdit.routeName: (BuildContext context) => ProfileEdit(),
+    AdminLoginScreen.routeName: (BuildContext context) => AdminLoginScreen(),
+    MainPage.routeName: (BuildContext context) => MainPage(title: 'አድሚን',),
+    DetailPage.routeName: (BuildContext context) => DetailPage()
   };
 }
