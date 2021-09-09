@@ -22,8 +22,7 @@ void main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (ctx) => LessonBloc(lessonRepository: lessonRepository)
-          ..add(LessonLoad()),
+        create: (ctx) => LessonBloc(lessonRepository: lessonRepository),
       )
     ],
     child: MaterialApp(

@@ -6,7 +6,7 @@ class Lesson {
   final String content;
   final String status;
   final int teacher_id;
-  final String teacher_name;
+  final String? teacher_name;
   
   Lesson(
       {required this.lesson_id,
@@ -16,7 +16,7 @@ class Lesson {
       required this.content,
       required this.status,
       required this.teacher_id,
-      required this.teacher_name});
+      this.teacher_name});
 
   factory Lesson.fromJson(Map<String, dynamic> json) {
     return Lesson(

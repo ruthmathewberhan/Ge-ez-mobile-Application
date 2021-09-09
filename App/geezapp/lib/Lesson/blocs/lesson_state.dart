@@ -19,4 +19,13 @@ class LessonOperationSuccess extends LessonState {
   List<Object> get props => [lessons];
 }
 
+class LessonLoadSuccess extends LessonState {
+  final Lesson lesson;
+
+  LessonLoadSuccess(this.lesson);
+
+  @override
+  List<Object> get props => [lesson];
+}
+
 class LessonOperationFailure extends LessonState {}

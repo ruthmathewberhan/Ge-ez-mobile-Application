@@ -12,14 +12,28 @@ class Admin extends StatefulWidget {
   _SimpleAppBarPageState createState() => _SimpleAppBarPageState();
 }
 
-class _SimpleAppBarPageState extends State<Admin> {
+class _SimpleAppBarPageState extends State<Admin>
+    with TickerProviderStateMixin {
   late var lessonList;
   late var questionList;
+  late TabController controller;
+
+  @override
+  void initState() {
+    BlocProvider.of<LessonBloc>(context).add(LessonLoad('pending'));
+    super.initState();
+    controller = TabController(vsync: this, length: 3);
+    controller.addListener(() {
+      if (controller.index == 0) {
+        BlocProvider.of<LessonBloc>(context).add(LessonLoad('pending'));
+      } else if (controller.index == 1) {
+        BlocProvider.of<LessonBloc>(context).add(LessonLoad('approved'));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final lessonBloc = BlocProvider.of<LessonBloc>(context);
-
     Size size = MediaQuery.of(context).size;
 
     return DefaultTabController(
@@ -45,6 +59,7 @@ class _SimpleAppBarPageState extends State<Admin> {
               Tab(text: 'ትምህርቶች'),
               Tab(text: 'ፈተና'),
             ],
+            controller: controller,
           ),
           elevation: 20,
           titleSpacing: 20,
@@ -54,11 +69,15 @@ class _SimpleAppBarPageState extends State<Admin> {
                   bottomRight: Radius.circular(30))),
         ),
         body: TabBarView(
+          controller: controller,
           children: [
             BlocBuilder<LessonBloc, LessonState>(
               builder: (_, lessonState) {
                 if (lessonState is LessonLoading) {
-                  return CircularProgressIndicator();
+                  return SizedBox(
+                      height: 10,
+                      width: 10,
+                      child: CircularProgressIndicator());
                 }
                 if (lessonState is LessonOperationFailure) {
                   return Text("loading lessons failed");
@@ -70,11 +89,10 @@ class _SimpleAppBarPageState extends State<Admin> {
                     itemBuilder: (_, int index) {
                       return Center(
                         child: GestureDetector(
-                          onTap:  () {
-                            Navigator.pushNamed(
-                                    context,
-                                    DetailPage.routeName
-                                  );
+                          onTap: () {
+                            BlocProvider.of<LessonBloc>(context)
+                                .add(LoadLessonContent(lessons.elementAt(index)));
+                            Navigator.pushNamed(context, DetailPage.routeName);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -86,15 +104,15 @@ class _SimpleAppBarPageState extends State<Admin> {
                             padding: EdgeInsets.all(10.0),
                             margin: EdgeInsets.all(10.0),
                             child: ListTile(
-                                title: Text('${lessons.elementAt(index).lessonName}'),
-                                subtitle: Text('የአስተማሪ ስም : ${lessons.elementAt(index).teacher_name}'),
+                                title: Text(
+                                    '${lessons.elementAt(index).lessonName}'),
+                                subtitle: Text(
+                                    'የአስተማሪ ስም : ${lessons.elementAt(index).teacher_name}'),
                                 trailing: IconButton(
                                   icon: Icon(Icons.arrow_forward),
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                      context,
-                                      DetailPage.routeName
-                                    );
+                                        context, DetailPage.routeName);
                                   },
                                 )),
                           ),
@@ -106,36 +124,51 @@ class _SimpleAppBarPageState extends State<Admin> {
                 return Container();
               },
             ),
-            ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1,
+            BlocBuilder<LessonBloc, LessonState>(builder: (_, lessonState) {
+              if (lessonState is LessonLoading) {
+                return SizedBox(
+                    height: 10, width: 10, child: CircularProgressIndicator());
+              }
+              if (lessonState is LessonOperationSuccess) {
+                final lessons = lessonState.lessons;
+                return ListView.builder(
+                  itemCount: lessons.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: EdgeInsets.all(10.0),
+                        margin: EdgeInsets.all(10.0),
+                        child: ListTile(
+                          title: Text('${lessons.elementAt(index).lessonName}'),
+                          subtitle: Text(
+                              'የአስተማሪ ስም : ${lessons.elementAt(index).teacher_name}'),
+                          trailing: Icon(
+                            Icons.delete,
+                            color: Color(0xFFB751623),
                           ),
-                          borderRadius: BorderRadius.circular(12)),
-                      padding: EdgeInsets.all(10.0),
-                      margin: EdgeInsets.all(10.0),
-                      child: ListTile(
-                        title: Text('የትምህርቱ ርእስ'),
-                        trailing: Icon(
-                          Icons.delete,
-                          color: Color(0xFFB751623),
+                          onTap: () {
+                            BlocProvider.of<LessonBloc>(context)
+                                .add(LoadLessonContent(lessons.elementAt(index)));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetailPagelesson(index)));
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DetailPagelesson(index)));
-                        },
                       ),
-                    ),
-                  );
-                },
-                itemCount: 10),
+                    );
+                  },
+                );
+              }
+              return Container();
+            }),
             ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
                   return Center(
@@ -175,43 +208,3 @@ class _SimpleAppBarPageState extends State<Admin> {
         ),
       );
 }
-
-
-
-// //get list of new questions
-// Future<List<Question>> fetchQuestions() async {
-//   final response = await http
-//       .get(Uri.parse('http://127.0.0.1:5000/api/v1/questions/pending'));
-
-//   if (response.statusCode == 200) {
-//     final questions = jsonDecode(response.body) as List;
-//     return questions.map((c) => Question.fromJson(c)).toList();
-//   } else {
-//     throw Exception("Couldn't fetch lessons");
-//   }
-// }
-
-
-// class Question {
-//   final int question_id;
-//   final String question;
-//   final int level_id;
-//   final int user_id;
-//   final String status;
-
-//   Question(
-//       {required this.question_id,
-//       required this.question,
-//       required this.level_id,
-//       required this.user_id,
-//       required this.status});
-
-//   factory Question.fromJson(Map<String, dynamic> json) {
-//     return Question(
-//         question_id: json['question_id'],
-//         question: json['question'],
-//         level_id: json['level_id'],
-//         user_id: json['user_id'],
-//         status: json['status']);
-//   }
-// }
