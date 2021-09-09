@@ -13,6 +13,19 @@ class LessonLoad extends LessonEvent {
   List<Object?> get props => [this.status];
 }
 
+class LessonCreate extends LessonEvent {
+  final Lesson lesson;
+
+  const LessonCreate(this.lesson);
+   
+   @override
+  List<Object> get props => [lesson];
+
+  @override
+  String toString() => 'lesson Created {lesson: $lesson}';
+}
+   
+   
 class LoadLessonContent extends LessonEvent {
   final Lesson lesson;
   LoadLessonContent(this.lesson);
