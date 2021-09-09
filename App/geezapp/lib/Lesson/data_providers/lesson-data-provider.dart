@@ -16,4 +16,25 @@ class LessonDataProvider {
       throw Exception("Couldn't fetch lessons");
     }
   }
+
+  Future<Lesson> create(Lesson lesson) async {
+    print(lesson.lessonName);
+    final http.Response response =
+        await http.post(Uri.parse('$_baseUrl/lesson'),
+            headers: <String, String>{"Content-Type": "application/json"},
+            body: jsonEncode({
+              'lessonName': lesson.lessonName,
+              'level_id': lesson.level_id,
+              'course_id': lesson.course_id,
+              'content': lesson.content,
+              'status': lesson.status,
+              'teacher_id': lesson.teacher_id
+            }));
+    if (response.statusCode == 201) {
+      return Lesson.fromJson(jsonDecode(response.body));
+    }
+    {
+      throw Exception("Failed to create lesson");
+    }
+  }
 }

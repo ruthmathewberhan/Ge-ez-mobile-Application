@@ -8,4 +8,8 @@ class LessonRepository {
   Future<List<Lesson>> fetchLessons() async {
     return this.dataProvider.fetchLessons();
   }
+
+  Future<Lesson> create(Lesson lesson) async {
+    return this.dataProvider.create(lesson);
+  }
 }

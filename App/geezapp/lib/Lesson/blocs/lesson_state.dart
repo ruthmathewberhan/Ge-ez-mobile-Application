@@ -20,3 +20,4 @@ class LessonOperationSuccess extends LessonState {
 }
 
 class LessonOperationFailure extends LessonState {}
+

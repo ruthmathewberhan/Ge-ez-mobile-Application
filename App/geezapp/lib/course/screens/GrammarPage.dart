@@ -186,6 +186,7 @@ class _GrammarPageState extends State<GrammarPage> {
       ),
       bottomNavigationBar: CustomNavBar(
         selectedMenu: MenuState.lessons,
+        utype: 'user'
       ),
     );
   }

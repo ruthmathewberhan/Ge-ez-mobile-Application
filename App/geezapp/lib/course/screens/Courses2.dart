@@ -264,6 +264,7 @@ class _Courses2State extends State<Courses2> {
       ),
       bottomNavigationBar: CustomNavBar(
         selectedMenu: MenuState.lessons,
+        utype: 'user'
       ),
     );
   }
