@@ -23,7 +23,6 @@ void main() async {
     providers: [
       BlocProvider(
         create: (ctx) => LessonBloc(lessonRepository: lessonRepository)
-          ..add(LessonLoad()),
       )
     ],
     child: MaterialApp(

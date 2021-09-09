@@ -282,6 +282,7 @@ class _UserHomePageState extends State<UserHomePage> {
       ),
       bottomNavigationBar: CustomNavBar(
         selectedMenu: MenuState.home,
+        utype: 'user'
       ),
     );
   }

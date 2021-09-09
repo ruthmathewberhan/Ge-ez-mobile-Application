@@ -441,7 +441,7 @@ class PostTeacherLesson(Resource):
 
         db.session.add(new_lesson)
         db.session.commit()
-        return new_lesson
+        return new_lesson, 201
 
 
 # class for teacher's get test endpoints

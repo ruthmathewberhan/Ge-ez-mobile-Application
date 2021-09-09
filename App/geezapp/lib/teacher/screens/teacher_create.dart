@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:geezapp/User/screens/profile_screen.dart';
+import 'package:geezapp/teacher/screens/create_lessons.dart';
+import 'package:geezapp/teacher/screens/create_test.dart';
 
-void main() => runApp(const MyApp());
+import '../../enums.dart';
+
+void main() => runApp(const TeacherCreate());
 
 /// This is the main application widget.
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class TeacherCreate extends StatelessWidget {
+  static const String routeName = '/teachercreate';
+  const TeacherCreate({Key? key}) : super(key: key);
 
   static const String _title = ' አዘጋጅ';
   static const primaryColor = const Color(0xFFD55555);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      theme: ThemeData(
-        primaryColor: primaryColor,
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.home),
+        title: const Text(_title),
+        backgroundColor: primaryColor,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.home),
-          title: const Text(_title),
-          backgroundColor: primaryColor,
-        ),
-        body: Create(),
-      ),
+      body: Create(),
+      bottomNavigationBar:
+          CustomNavBar(selectedMenu: MenuState.lessons, utype: 'teacher'),
     );
   }
 }
@@ -37,7 +39,9 @@ class Create extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          //onTap: createLesson(),
+          onTap: () {
+            Navigator.pushNamed(context, CreateLessonApp.routeName);
+          },
           child: Container(
             height: 200,
             width: 400,
@@ -66,7 +70,9 @@ class Create extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          //onTap: createTest(),
+          onTap: () {
+            Navigator.pushNamed(context, CreateTestApp.routeName);
+          },
           child: Container(
             height: 200,
             width: 400,

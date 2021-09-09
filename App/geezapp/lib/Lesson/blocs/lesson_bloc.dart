@@ -14,8 +14,25 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
       try {
         final lessons = await lessonRepository.fetchLessons();
         yield LessonOperationSuccess(lessons);
-      } catch (_) {
+      } catch (error) {
+        print(error);
         yield LessonOperationFailure();
+      }
+    }
+
+    if (event is LessonCreate) {
+      yield LessonLoading();
+      try {
+        await lessonRepository.create(event.lesson);
+        final lessons = await lessonRepository.fetchLessons();
+        yield LessonOperationSuccess(lessons);
+        await Future.delayed(Duration(seconds: 3));
+        yield LessonLoading();
+      } catch (error) {
+        print(error);
+        yield LessonOperationFailure();
+        await Future.delayed(Duration(seconds: 3));
+        yield LessonLoading();
       }
     }
   }

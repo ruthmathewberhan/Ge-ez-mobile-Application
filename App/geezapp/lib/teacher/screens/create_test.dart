@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(const CreateTestApp());
 
 /// This is the main application widget.
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class CreateTestApp extends StatelessWidget {
+  static const String routeName = '/createtest';
+  const CreateTestApp({Key? key}) : super(key: key);
 
   static const String _title = 'ፈተና አዘጋጅ';
   static const primaryColor = const Color(0xFFD55555);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      theme: ThemeData(
-        primaryColor: primaryColor,
-      ),
-      home: Scaffold(
+    return 
+      Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.home),
+          leading: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back)),
           title: const Text(_title),
           backgroundColor: primaryColor,
         ),
         body: CreateTest(),
-      ),
     );
   }
 }
