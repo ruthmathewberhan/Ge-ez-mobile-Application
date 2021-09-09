@@ -1,9 +1,6 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geezapp/Lesson/blocs/blocs.dart';
-import 'package:geezapp/Lesson/data_providers/lesson-data-provider.dart';
-import 'package:geezapp/Lesson/repository/lesson-repository.dart';
 import 'package:geezapp/profile/signup/bloc/signup_bloc.dart';
 import 'package:geezapp/profile/signup/repository/signup.dart';
 import 'package:geezapp/profile/signup/screens/signup.dart';
@@ -42,7 +39,6 @@ class SimpleBlocDelegate extends BlocObserver {
 }
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   var email = preferences.getString('email');
@@ -50,13 +46,11 @@ void main() async {
 
   final userRepository = UserRepository();
   final signupRepository = SignupRepository(dataProvider: SignupDataProvider());
-  final lessonRepository = LessonRepository(LessonDataProvider());
 
   final profileScreenRepository =
       ProfileScreenRepository(dataProvider: ProfileScreenDataProvider());
   runApp(MultiBlocProvider(
     providers: [
-      BlocProvider(create: (ctx) => LessonBloc(lessonRepository: lessonRepository))
       BlocProvider<AuthenticationBloc>(
         create: (context) {
           return AuthenticationBloc(userRepository: userRepository)
