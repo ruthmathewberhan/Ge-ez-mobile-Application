@@ -19,6 +19,8 @@ class LessonOperationSuccess extends LessonState {
   List<Object> get props => [lessons];
 }
 
+class LessonOperationFailure extends LessonState {}
+
 class LessonLoadSuccess extends LessonState {
   final Lesson lesson;
 
@@ -27,5 +29,3 @@ class LessonLoadSuccess extends LessonState {
   @override
   List<Object> get props => [lesson];
 }
-
-class LessonOperationFailure extends LessonState {}
