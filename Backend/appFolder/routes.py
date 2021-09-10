@@ -35,8 +35,8 @@ class UseSignIn(Resource):
         result = User.query.filter_by(email=email).first()
         if result:
             if result.password == password:
-                return {"message": "login", "user_id": result.user_id, "email": result.email, "password": result.password}
-        return {"message": "not login"}
+                return {"message": "login", "user_id": str(result.user_id), "email": result.email, "password": result.password}
+        return {"message": "not login", "user_id": "", "email": "", "password": ""}
 
 #signup or register
 
@@ -96,7 +96,15 @@ class UserProfile(Resource):
 
         return result
 
+class GetAllUser(Resource):
+    @marshal_with(resource_fields)
+    def get(self):
+        result = User.query.all()
+        if result:
+            return result
+        return "user not found"
 
 api.add_resource(UseSignIn, "/api/v1/user/login")
 api.add_resource(UserSignUp,  "/api/v1/user/register")
 api.add_resource(UserProfile,  "/api/v1/user/profile/<int:id>")
+api.add_resource(GetAllUser, "/api/v1/user/all")
