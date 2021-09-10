@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geezapp/User/screens/login_screen.dart';
+import 'package:geezapp/login/screens/login.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const String routeName = '/welcome';
