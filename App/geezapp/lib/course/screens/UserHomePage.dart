@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geezapp/course/my_flutter_app_icons.dart';
-import 'package:geezapp/User/screens/profile_screen.dart';
+import 'package:geezapp/profile/profile_screen/screens/profile_screen.dart';
 import 'package:geezapp/course/screens/GrammarPage.dart';
 import 'package:geezapp/course/screens/home_screen.dart';
 import 'package:geezapp/enums.dart';
