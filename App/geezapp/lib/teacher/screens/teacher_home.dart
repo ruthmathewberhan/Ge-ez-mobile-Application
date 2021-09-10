@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geezapp/User/screens/profile_screen.dart';
 import 'package:geezapp/enums.dart';
+import 'package:geezapp/profile/profile_screen/screens/profile_screen.dart';
 import 'package:geezapp/teacher/screens/teacher_create.dart';
 
 void main() => runApp(const TeacherHome());

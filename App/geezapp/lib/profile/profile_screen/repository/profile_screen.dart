@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import '../profile_screen.dart';
+import '../profile.dart';
 
 class ProfileScreenRepository {
   final ProfileScreenDataProvider dataProvider;

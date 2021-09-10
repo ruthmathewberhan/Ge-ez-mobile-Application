@@ -1,6 +1,8 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geezapp/Lesson/data_providers/lesson-data-provider.dart';
+import 'package:geezapp/Lesson/repository/lesson-repository.dart';
 import 'package:geezapp/profile/signup/bloc/signup_bloc.dart';
 import 'package:geezapp/profile/signup/repository/signup.dart';
 import 'package:geezapp/profile/signup/screens/signup.dart';
@@ -13,6 +15,7 @@ import 'package:geezapp/profile/signup/signup.dart';
 import 'Auth/auth_bloc.dart';
 import 'Auth/auth_event.dart';
 import 'Auth/auth_state.dart';
+import 'Lesson/blocs/lesson_bloc.dart';
 import 'login/screens/login.dart';
 import 'package:geezapp/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,30 +49,31 @@ void main() async {
 
   final userRepository = UserRepository();
   final signupRepository = SignupRepository(dataProvider: SignupDataProvider());
-
+  final lessonRepository = LessonRepository(LessonDataProvider());
   final profileScreenRepository =
       ProfileScreenRepository(dataProvider: ProfileScreenDataProvider());
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider<AuthenticationBloc>(
-        create: (context) {
-          return AuthenticationBloc(userRepository: userRepository)
-            ..add(AppStarted());
-        },
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (ctx) => LessonBloc(lessonRepository: lessonRepository),
+        ),
+        BlocProvider<AuthenticationBloc>(
+          create: (context) {
+            return AuthenticationBloc(userRepository: userRepository)
+              ..add(AppStarted());
+          },
+        ),
+        BlocProvider(
+            create: (ctx) => ProfileScreenBloc(
+                profileScreenRepository: profileScreenRepository)),
+        BlocProvider(
+            create: (ctx) => SignupBloc(signupRepository: signupRepository)),
+      ],
+      child: MaterialApp(
+        routes: AppRoute.routes,
+        initialRoute: AppRoute.initialRoute,
       ),
-      BlocProvider(
-          create: (ctx) => ProfileScreenBloc(
-              profileScreenRepository: profileScreenRepository)),
-       BlocProvider(
-          create: (ctx) => SignupBloc(
-              signupRepository: signupRepository)),   
-    ],
-    child: MaterialApp(routes:AppRoute.routes,
-    initialRoute: AppRoute.initialRoute, 
     ),
-
-  ),
-
   );
 }
-

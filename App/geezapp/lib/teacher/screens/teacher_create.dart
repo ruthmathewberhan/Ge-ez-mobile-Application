@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geezapp/User/screens/profile_screen.dart';
+import 'package:geezapp/profile/profile_screen/screens/profile_screen.dart';
 import 'package:geezapp/teacher/screens/create_lessons.dart';
 import 'package:geezapp/teacher/screens/create_test.dart';
 

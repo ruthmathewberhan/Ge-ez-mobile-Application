@@ -11,7 +11,9 @@ import 'package:geezapp/enums.dart';
 import 'package:geezapp/login/repository/login.dart';
 import 'package:geezapp/main.dart';
 import 'package:geezapp/profile/profile_screen/bloc/profile_screen_bloc.dart';
-import 'package:geezapp/profile/profile_screen/profile_screen.dart';
+import 'package:geezapp/profile/profile_screen/profile.dart';
+import 'package:geezapp/teacher/screens/teacher_create.dart';
+import 'package:geezapp/teacher/screens/teacher_home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -281,22 +283,25 @@ class _StateProfileScreen extends State<ProfileScreen> {
         ],
       ),
       bottomNavigationBar: CustomNavBar(
-        selectedMenu: MenuState.profile,
+        selectedMenu: MenuState.profile, utype: 'teacher',
       ),
     );
   }
 }
 
 class CustomNavBar extends StatelessWidget {
-  const CustomNavBar({Key? key, required this.selectedMenu}) : super(key: key);
+  const CustomNavBar(
+      {Key? key, required this.selectedMenu, required this.utype})
+      : super(key: key);
 
   final MenuState selectedMenu;
+  final String utype;
 
   @override
   Widget build(BuildContext context) {
     final Color inActiveIconColor = Color(0xFFB6B6B6);
     return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
+      height: MediaQuery.of(context).size.height * 0.11,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -319,7 +324,9 @@ class CustomNavBar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, UserHomePage.routeName);
+                    utype == "user"
+                        ? Navigator.pushNamed(context, UserHomePage.routeName)
+                        : Navigator.pushNamed(context, TeacherHome.routeName);
                   },
                   icon: Icon(
                     Icons.home_outlined,
@@ -343,10 +350,14 @@ class CustomNavBar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, Courses2.routeName);
+                    utype == "user"
+                        ? Navigator.pushNamed(context, Courses2.routeName)
+                        : Navigator.pushNamed(context, TeacherCreate.routeName);
                   },
                   icon: Icon(
-                    Icons.play_lesson_outlined,
+                    utype == "user"
+                        ? Icons.play_lesson_outlined
+                        : Icons.create_new_folder,
                     color: MenuState.lessons == selectedMenu
                         ? Color(0xFFB77415A)
                         : Colors.grey,
@@ -354,7 +365,7 @@ class CustomNavBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'ትምህርቶች',
+                  utype == "user" ? 'ትምህርቶች' : 'ፍጠር',
                   style: TextStyle(
                     color: MenuState.lessons == selectedMenu
                         ? Color(0xFFB77415A)
