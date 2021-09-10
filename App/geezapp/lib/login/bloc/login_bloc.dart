@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../Auth/auth.dart';
 import '../../login/repository/login.dart';
 import 'package:meta/meta.dart';
@@ -16,7 +18,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required this.userRepository,
     required this.authenticationBloc,
   })  : assert(userRepository != null),
-        assert(authenticationBloc != null), super(LoginInitial());
+        assert(authenticationBloc != null),
+        super(LoginInitial());
 
   @override
   LoginState get initialState => LoginInitial();
@@ -31,8 +34,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           event.email,
           event.password,
         );
-        authenticationBloc.add(LoggedIn(token: token));
-        yield LoginInitial();
+        if (token == "") {
+          print("token is empty");
+          yield LoginFailure(error: "incorect username or password");
+        } else {
+          authenticationBloc.add(LoggedIn(token: token));
+          //  SharedPreferences sharedPreferences =
+          //                       await SharedPreferences.getInstance();
+          //                   sharedPreferences.setString(
+          //                       'email', ['email'].toString());
+          //                   sharedPreferences.setString(
+          //                       "user_id", token);
+
+          yield LoginInitial();
+        }
       } catch (error) {
         yield LoginFailure(error: error.toString());
       }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
   static String mainUrl = "http://localhost:5000/api/v1";
@@ -9,7 +10,7 @@ class UserRepository {
   final Dio _dio = Dio();
 
   Future<bool> hasToken() async {
-    var value = await storage.read(key: 'token');
+    var value = await storage.read(key: 'user_id');
     if (value != null) {
       return true;
     } else {
@@ -18,11 +19,11 @@ class UserRepository {
   }
 
   Future<void> persistToken(String token) async {
-    await storage.write(key: 'token', value: token);
+    await storage.write(key: 'user_id', value: token);
   }
 
   Future<void> deleteToken() async {
-    storage.delete(key: 'token');
+    storage.delete(key: 'user_id');
     storage.deleteAll();
   }
 
@@ -31,7 +32,13 @@ class UserRepository {
       "email": phone,
       "password": password,
     });
-    return response.data["token"];
-  }
+     SharedPreferences sharedPreferences =
+                                await SharedPreferences.getInstance();
+                            sharedPreferences.setString(
+                                'email', response.data["email"]);
+                            sharedPreferences.setString(
+                                "user_id", response.data["user_id"]);
 
+    return response.data["user_id"];
+  }
 }
